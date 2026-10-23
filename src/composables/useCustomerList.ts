@@ -1,9 +1,10 @@
 import { computed, ref, watch } from 'vue'
-import type { ServerOptions } from 'vue3-easy-data-table'
 import { getCustomers } from '../api/customers'
 import { useSession } from './useSession'
 import { usePendingApprovals } from './usePendingApprovals'
 import type { Customer } from '../types'
+
+type ServerOptions = { page: number; rowsPerPage: number }
 
 export function useCustomerList() {
   const { role, staffId: sessionStaffId } = useSession()
