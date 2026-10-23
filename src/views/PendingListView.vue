@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import type { Header } from 'vue3-easy-data-table'
 import { usePendingApprovals } from '../composables/usePendingApprovals'
 import { APPROVAL_LABEL, STAFF_LABEL } from '../types'
+
+type Header = { text: string; value: string }
 
 const { approvals, loading, fetchApprovals } = usePendingApprovals()
 onMounted(() => fetchApprovals(true))
