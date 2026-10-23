@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+::selection { background: #f59e0b; color: #09090b; }
+::-moz-selection { background: #f59e0b; color: #09090b; }
+
+:root {
+  color-scheme: dark;
+  font-family: ui-monospace, "Sarasa Mono TC", "Noto Sans TC", Consolas, monospace;
+  color: #e7e5e4;
+  background: #09090b;
+}
+
+body { margin: 0; min-height: 100svh; background: #09090b; color: #e7e5e4; }
+
+input::selection, textarea::selection { background: #fbbf24; color: #09090b; }
+
+.vue3-easy-data-table {
+  --easy-table-header-background-color: #27272a;
+  --easy-table-header-font-color: #fbbf24;
+  --easy-table-body-row-background-color: #18181b;
+  --easy-table-body-even-row-background-color: #18181b;
+  --easy-table-body-row-font-color: #e7e5e4;
+  --easy-table-body-row-hover-font-color: #09090b;
+  --easy-table-body-row-hover-background-color: #f59e0b;
+  --easy-table-border-color: #3f3f46;
+  --easy-table-footer-background-color: #18181b;
+  --easy-table-footer-font-color: #a8a29e;
+  --easy-table-message-font-color: #a8a29e;
+  font-size: 15px !important;
+}
+
+.vue3-easy-data-table__body tr:hover td,
+.vue3-easy-data-table__body tr:hover td span,
+.vue3-easy-data-table__body tr:hover td a {
+  background: #f59e0b !important;
+  color: #09090b !important;
+}
