@@ -1,7 +1,9 @@
 import type { Approval } from '../types'
 import { updateCustomerStaff } from './customers'
 
-const ALL: Approval[] = [
+const KEY = 'crm.approvals'
+
+const SEED: Approval[] = [
   {
     id: 1,
     type: 'reassign',
@@ -44,22 +46,34 @@ const ALL: Approval[] = [
   },
 ]
 
-let nextId = 5
+function load(): Approval[] {
+  const raw = localStorage.getItem(KEY)
+  if (!raw) {
+    localStorage.setItem(KEY, JSON.stringify(SEED))
+    return SEED.map((a) => ({ ...a, payload: { ...a.payload } }))
+  }
+  return JSON.parse(raw) as Approval[]
+}
+
+function save(list: Approval[]) {
+  localStorage.setItem(KEY, JSON.stringify(list))
+}
+
 const delay = (ms = 160) => new Promise((r) => setTimeout(r, ms))
 
 export async function getApprovals(): Promise<Approval[]> {
   await delay()
-  return ALL.filter((a) => a.status === 'pending')
+  return load().filter((a) => a.status === 'pending')
 }
 
 export async function getApprovalById(id: number): Promise<Approval | undefined> {
   await delay()
-  return ALL.find((a) => a.id === id)
+  return load().find((a) => a.id === id)
 }
 
 export async function getMyRequests(staffId: number): Promise<Approval[]> {
   await delay()
-  return ALL.filter((a) => a.staffId === staffId)
+  return load().filter((a) => a.staffId === staffId)
 }
 
 export async function submitApproval(input: {
@@ -70,8 +84,10 @@ export async function submitApproval(input: {
   payload: Approval['payload']
 }): Promise<void> {
   await delay()
-  ALL.push({
-    id: nextId++,
+  const list = load()
+  const nextId = Math.max(0, ...list.map((a) => a.id)) + 1
+  list.push({
+    id: nextId,
     type: input.type,
     customerName: input.customerName,
     staffId: input.staffId,
@@ -80,6 +96,7 @@ export async function submitApproval(input: {
     note: input.note,
     payload: input.payload,
   })
+  save(list)
 }
 
 export async function decideApproval(
@@ -89,11 +106,13 @@ export async function decideApproval(
   rejectReason?: string,
 ): Promise<void> {
   await delay()
-  const target = ALL.find((a) => a.id === id)
+  const list = load()
+  const target = list.find((a) => a.id === id)
   if (!target || target.status !== 'pending') return
   target.status = decision
   if (decision === 'rejected') target.rejectReason = rejectReason
   if (decision === 'approved' && target.type === 'reassign') {
     await updateCustomerStaff(target.customerName, newStaffId ?? target.payload.newStaffId ?? target.staffId)
   }
+  save(list)
 }
