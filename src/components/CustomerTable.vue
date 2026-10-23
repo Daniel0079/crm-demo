@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import type { Header, ServerOptions } from 'vue3-easy-data-table'
 import { STAFF_LABEL, type Customer } from '../types'
+
+type Header = { text: string; value: string }
+type ServerOptions = { page: number; rowsPerPage: number }
 
 defineProps<{ rows: Customer[]; loading: boolean; total: number }>()
 const serverOptions = defineModel<ServerOptions>('serverOptions', { required: true })
